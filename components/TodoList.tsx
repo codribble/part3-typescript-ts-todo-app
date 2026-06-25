@@ -3,32 +3,14 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Todo } from "@/types/todo";
 import { API_URL } from "@/constants";
+import { useDeleteTodo, useToggleCompleteTodo } from "@/hooks/useTodos";
 
 const TodoList = ({ todos }: { todos: Todo[] }) => {
   const queryClient = useQueryClient();
 
-  const { mutate: toggleTodoMutation } = useMutation({
-    mutationFn: async (todo: Todo) => {
-      await fetch(`${API_URL}/${todo.id}`, {
-        method: "PATCH",
-        body: JSON.stringify({ done: !todo.done }),
-      });
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["todos"] });
-    },
-  });
+  const { mutate: toggleTodoMutation } = useToggleCompleteTodo();
 
-  const { mutate: deleteTodoMutation } = useMutation({
-    mutationFn: async (id: string) => {
-      await fetch(`${API_URL}/${id}`, {
-        method: "DELETE",
-      });
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["todos"] });
-    },
-  });
+  const { mutate: deleteTodoMutation } = useDeleteTodo();
 
   const handleToggleTodo = (todo: Todo) => {
     toggleTodoMutation(todo);
@@ -51,7 +33,12 @@ const TodoList = ({ todos }: { todos: Todo[] }) => {
               checked={todo.done}
               onChange={() => handleToggleTodo(todo)}
             />
-            <label htmlFor={`${todo.title}-${todo.id}`}>{todo.title}</label>
+            <label
+              htmlFor={`${todo.title}-${todo.id}`}
+              className={`cursor-pointer ${todo.done ? "line-through" : ""}`}
+            >
+              {todo.title}
+            </label>
           </div>
 
           <button

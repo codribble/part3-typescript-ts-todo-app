@@ -1,40 +1,15 @@
 "use client";
 
 import { ChangeEvent, FormEvent, useState } from "react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Todo } from "@/types/todo";
-import { API_URL } from "@/constants";
+import { useCreateTodo, useGetTodos } from "@/hooks/useTodos";
 import TodoList from "@/components/TodoList";
 
 const HomePage = () => {
   const [title, setTitle] = useState<string>("");
-  const QueryClient = useQueryClient();
 
-  const {
-    data: todos,
-    isLoading,
-    isError,
-  } = useQuery<Todo[]>({
-    queryKey: ["todos"],
-    queryFn: async () => {
-      const res = await fetch(API_URL);
-      const data = await res.json();
+  const { data: todos, isLoading, isError } = useGetTodos();
 
-      return data;
-    },
-  });
-
-  const { mutate: newTodoMutation } = useMutation({
-    mutationFn: async (title: string) => {
-      await fetch(API_URL, {
-        method: "POST",
-        body: JSON.stringify({ title, done: false }),
-      });
-    },
-    onSuccess: () => {
-      QueryClient.invalidateQueries({ queryKey: ["todos"] });
-    },
-  });
+  const { mutate: newTodoMutation } = useCreateTodo();
 
   const handleTitleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setTitle(e.target.value);

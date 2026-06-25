@@ -17,12 +17,12 @@
     },
     {
       "title": "aaaa",
-      "done": true,
+      "done": false,
       "id": "Lk-yXbr6Ei4"
     },
     {
       "title": "추가",
-      "done": true,
+      "done": false,
       "id": "KoWUwMyg8NY"
     },
     {
@@ -32,7 +32,7 @@
     },
     {
       "title": "토글...",
-      "done": false,
+      "done": true,
       "id": "7SoakZ0Bukk"
     }
   ],
